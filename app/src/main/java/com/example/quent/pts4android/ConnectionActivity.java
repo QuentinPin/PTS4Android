@@ -1,11 +1,14 @@
 package com.example.quent.pts4android;
 
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 
 public class ConnectionActivity extends AppCompatActivity {
@@ -14,6 +17,7 @@ public class ConnectionActivity extends AppCompatActivity {
     private EditText motDePasseEditText;
     private Button connectionButton;
     private Button afficherMotDePasseButton;
+    private CheckBox sauvegardeIdentifiantCheckBox;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,6 +27,7 @@ public class ConnectionActivity extends AppCompatActivity {
         motDePasseEditText = findViewById(R.id.motDePasseEditText);
         connectionButton = findViewById(R.id.connectionButton);
         afficherMotDePasseButton = findViewById(R.id.afficherMotDePasseButton);
+        sauvegardeIdentifiantCheckBox = findViewById(R.id.sauvegardeIdentifiantCheckBox);
         afficherMotDePasseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -35,6 +40,14 @@ public class ConnectionActivity extends AppCompatActivity {
                 connectionButtonAction();
             }
         });
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        String identifiant = preferences.getString("Identifiant","");
+        String motDePasse = preferences.getString("MotDePasse","");
+        identifiantEditText.setText(identifiant);
+        motDePasseEditText.setText(motDePasse);
+        if (!identifiant.equals("")){
+            sauvegardeIdentifiantCheckBox.setChecked(true);
+        }
     }
 
     private void afficherMotDePasseAction() {
@@ -50,6 +63,7 @@ public class ConnectionActivity extends AppCompatActivity {
     private void connectionButtonAction() {
         String id = identifiantEditText.getText().toString();
         String mdp = motDePasseEditText.getText().toString();
+        sauvegardeIdentifiant(id, mdp);
         /*
         Appelle de l'API ici
         */
@@ -57,5 +71,15 @@ public class ConnectionActivity extends AppCompatActivity {
         /*
         Changement d'interface
          */
+    }
+
+    private void sauvegardeIdentifiant(String id, String mdp){
+        if(sauvegardeIdentifiantCheckBox.isChecked()){
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putString("Identifiant", id);
+            editor.putString("MotDePasse", mdp);
+            editor.apply();
+        }
     }
 }
