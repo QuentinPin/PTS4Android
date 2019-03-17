@@ -1,5 +1,6 @@
 package com.example.quent.pts4android;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
@@ -10,6 +11,14 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.io.InputStream;
+import java.net.URL;
+
+import javax.net.ssl.HttpsURLConnection;
 
 public class ConnectionActivity extends AppCompatActivity {
 
@@ -64,13 +73,13 @@ public class ConnectionActivity extends AppCompatActivity {
         String id = identifiantEditText.getText().toString();
         String mdp = motDePasseEditText.getText().toString();
         sauvegardeIdentifiant(id, mdp);
-        /*
-        Appelle de l'API ici
-        */
+        //Appelle de l'API
+        this.traitementAPI();
+        //Changement interface -> NoteActivity
+        Intent i = new Intent(this, NoteActivity.class);
+        startActivity(i);
+        finish();
 
-        /*
-        Changement d'interface
-         */
     }
 
     private void sauvegardeIdentifiant(String id, String mdp){
@@ -80,6 +89,42 @@ public class ConnectionActivity extends AppCompatActivity {
             editor.putString("Identifiant", id);
             editor.putString("MotDePasse", mdp);
             editor.apply();
+        }
+    }
+
+    private void traitementAPI(){
+        try {
+            String myurl= "http://www.exemple.com/getPersonnes";
+
+            URL url = new URL(myurl);
+            HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
+            connection.connect();
+            InputStream inputStream = connection.getInputStream();
+            /*
+             * InputStreamOperations est une classe complémentaire:
+             * Elle contient une méthode InputStreamToString.
+             */
+            String result = InputStreamOperations.InputStreamToString(inputStream);
+
+            // On récupère le JSON complet
+            JSONObject jsonObject = new JSONObject(result);
+            // On récupère le tableau d'objets qui nous concernent
+            JSONArray array = new JSONArray(jsonObject.getString("personnes"));
+            // Pour tous les objets on récupère les infos
+            for (int i = 0; i < array.length(); i++) {
+                // On récupère un objet JSON du tableau
+                JSONObject obj = new JSONObject(array.getString(i));
+                // On fait le lien Personne - Objet JSON
+                Personne personne = new Personne();
+                personne.setNom(obj.getString("nom"));
+                personne.setPrenom(obj.getString("prenom"));
+                // On ajoute la personne à la liste
+                personnes.add(personne);
+
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }
