@@ -2,21 +2,17 @@ package com.example.quent.pts4android;
 
 import java.util.ArrayList;
 
-public class Semestre {
+public class Annee {
 
-    private Ue[] content;
     private String intitule;
     private String code;
+    private Semestre[] content;
 
-    public Semestre(String intitule, String code){
+    public Annee(String intitule, String code){
         super();
         this.intitule = intitule;
         this.code = code;
-        this.content = new Ue[3];
-    }
-
-    public Ue[] getListeDeUe() {
-        return content;
+        this.content = new Semestre[4];
     }
 
     public String getIntitule() {
@@ -25,10 +21,6 @@ public class Semestre {
 
     public String getCode() {
         return code;
-    }
-
-    public void setListeDeUe(ArrayList<Ue> listeDeUe) {
-        this.content = listeDeUe.toArray(new Ue[0]);
     }
 
     public void setIntitule(String intitule) {

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class Ue {
 
-    private ArrayList<Matiere> listeDeMatiere;
+    private Matiere[] matieres;
     private String intitule;
     private String code;
 
@@ -12,11 +12,11 @@ public class Ue {
         super();
         this.intitule = intitule;
         this.code = code;
-        this.listeDeMatiere = new ArrayList<Matiere>();
+        this.matieres = new Matiere[20];
     }
 
-    public ArrayList<Matiere> getListeDeMatiere() {
-        return listeDeMatiere;
+    public Matiere[] getListeDeMatiere() {
+        return matieres;
     }
 
     public String getIntitule() {
@@ -28,7 +28,7 @@ public class Ue {
     }
 
     public void setListeDeMatiere(ArrayList<Matiere> listeDeMatiere) {
-        this.listeDeMatiere = listeDeMatiere;
+        this.matieres = listeDeMatiere.toArray(new Matiere[0]);
     }
 
     public void setIntitule(String intitule) {

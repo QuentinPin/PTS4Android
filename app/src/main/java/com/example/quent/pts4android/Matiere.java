@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class Matiere {
 
-    private ArrayList<Note> listDeNote;
+    private Note[] notes;
     private String code;
     private String intitule;
     private String moyenne;
@@ -14,11 +14,11 @@ public class Matiere {
         this.intitule = intitule;
         this.code = code;
         this.moyenne = moyenne;
-        this.listDeNote = new ArrayList<Note>();
+        this.notes = new Note[3];
     }
 
     public void setListDeNote(ArrayList<Note> listDeNote) {
-        this.listDeNote = listDeNote;
+        this.notes = listDeNote.toArray(new Note[0]);
     }
 
     public void setCode(String code) {
@@ -33,9 +33,8 @@ public class Matiere {
         this.moyenne = moyenne;
     }
 
-    public ArrayList<Note> getListDeNote() {
-
-        return listDeNote;
+    public Note[] getListDeNote() {
+        return notes;
     }
 
     public String getCode() {

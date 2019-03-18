@@ -12,11 +12,14 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
+import com.google.gson.Gson;
 
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URL;
+import java.net.URLConnection;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -50,11 +53,11 @@ public class ConnectionActivity extends AppCompatActivity {
             }
         });
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        String identifiant = preferences.getString("Identifiant","");
-        String motDePasse = preferences.getString("MotDePasse","");
+        String identifiant = preferences.getString("Identifiant", "");
+        String motDePasse = preferences.getString("MotDePasse", "");
         identifiantEditText.setText(identifiant);
         motDePasseEditText.setText(motDePasse);
-        if (!identifiant.equals("")){
+        if (!identifiant.equals("")) {
             sauvegardeIdentifiantCheckBox.setChecked(true);
         }
     }
@@ -74,16 +77,16 @@ public class ConnectionActivity extends AppCompatActivity {
         String mdp = motDePasseEditText.getText().toString();
         sauvegardeIdentifiant(id, mdp);
         //Appelle de l'API
-        this.traitementAPI(id , mdp);
+        this.traitementAPI(id, mdp);
         //Changement interface -> NoteActivity
-        Intent i = new Intent(this, NoteActivity.class);
-        startActivity(i);
-        finish();
+//        Intent i = new Intent(this, NoteActivity.class);
+//        startActivity(i);
+//        finish();
 
     }
 
-    private void sauvegardeIdentifiant(String id, String mdp){
-        if(sauvegardeIdentifiantCheckBox.isChecked()){
+    private void sauvegardeIdentifiant(String id, String mdp) {
+        if (sauvegardeIdentifiantCheckBox.isChecked()) {
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
             SharedPreferences.Editor editor = preferences.edit();
             editor.putString("Identifiant", id);
@@ -92,7 +95,49 @@ public class ConnectionActivity extends AppCompatActivity {
         }
     }
 
-    private void traitementAPI(String id, String mdp){
+    private void traitementAPI(String id, String mdp) {
+        new Thread() {
+            public void run() {
+                String json = request("https://alexispoupelin.me/getAllNotes?id=i171193&pass=unq84eb&dep=INFO").toString();
+                if(json.length() == 0){
+                    /*
+                    ----- ERREUR DE CHARGEMENT -----
+                     */
+                }
+                char[] tempo = new char[json.length()-2];
+                json.getChars(1, json.length()-1, tempo, 0);
+                json = new String(tempo);
+                Gson unGson = new Gson();
+                Annee[] tabAnnee = unGson.fromJson(json, Annee[].class);
+                Log.i("test", "test");
+            }
+        }.start();
 
+    }
+
+    private StringBuffer request(String urlString) {
+        // TODO Auto-generated method stub
+
+        StringBuffer chaine = new StringBuffer("");
+        try {
+            URL url = new URL(urlString);
+            HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
+            connection.setRequestProperty("User-Agent", "");
+            connection.setRequestMethod("POST");
+            connection.setDoInput(true);
+            connection.connect();
+
+            InputStream inputStream = connection.getInputStream();
+
+            BufferedReader rd = new BufferedReader(new InputStreamReader(inputStream));
+            String line = "";
+            while ((line = rd.readLine()) != null) {
+                chaine.append(line);
+            }
+        } catch (IOException e) {
+            // Writing exception to log
+            e.printStackTrace();
+        }
+        return chaine;
     }
 }
