@@ -2,36 +2,14 @@ package com.example.quent.pts4android;
 
 public class Note {
 
-    private String intitule;
-    private float notePratique;
-    private float noteTheorique;
+    private String code;
+    private String type;
+    private String value;
 
-    public Note(String intitule){
+    public Note(String code, String type, String value){
         super();
-        this.intitule = intitule;
-    }
-
-    public String getIntitule() {
-        return intitule;
-    }
-
-    public float getNotePratique() {
-        return notePratique;
-    }
-
-    public float getNoteTheorique() {
-        return noteTheorique;
-    }
-
-    public void setIntitule(String intitule) {
-        this.intitule = intitule;
-    }
-
-    public void setNotePratique(float notePratique) {
-        this.notePratique = notePratique;
-    }
-
-    public void setNoteTheorique(float noteTheorique) {
-        this.noteTheorique = noteTheorique;
+        this.code = code;
+        this.type = type;
+        this.value = value;
     }
 }

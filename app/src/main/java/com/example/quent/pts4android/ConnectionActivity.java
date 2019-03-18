@@ -74,7 +74,7 @@ public class ConnectionActivity extends AppCompatActivity {
         String mdp = motDePasseEditText.getText().toString();
         sauvegardeIdentifiant(id, mdp);
         //Appelle de l'API
-        this.traitementAPI();
+        this.traitementAPI(id , mdp);
         //Changement interface -> NoteActivity
         Intent i = new Intent(this, NoteActivity.class);
         startActivity(i);
@@ -92,39 +92,7 @@ public class ConnectionActivity extends AppCompatActivity {
         }
     }
 
-    private void traitementAPI(){
-        try {
-            String myurl= "http://www.exemple.com/getPersonnes";
+    private void traitementAPI(String id, String mdp){
 
-            URL url = new URL(myurl);
-            HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
-            connection.connect();
-            InputStream inputStream = connection.getInputStream();
-            /*
-             * InputStreamOperations est une classe complémentaire:
-             * Elle contient une méthode InputStreamToString.
-             */
-            String result = InputStreamOperations.InputStreamToString(inputStream);
-
-            // On récupère le JSON complet
-            JSONObject jsonObject = new JSONObject(result);
-            // On récupère le tableau d'objets qui nous concernent
-            JSONArray array = new JSONArray(jsonObject.getString("personnes"));
-            // Pour tous les objets on récupère les infos
-            for (int i = 0; i < array.length(); i++) {
-                // On récupère un objet JSON du tableau
-                JSONObject obj = new JSONObject(array.getString(i));
-                // On fait le lien Personne - Objet JSON
-                Personne personne = new Personne();
-                personne.setNom(obj.getString("nom"));
-                personne.setPrenom(obj.getString("prenom"));
-                // On ajoute la personne à la liste
-                personnes.add(personne);
-
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 }
