@@ -1,5 +1,7 @@
 package com.example.quent.pts4android;
 
+import android.app.Dialog;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
@@ -30,6 +32,7 @@ public class ConnectionActivity extends AppCompatActivity {
     private Button connectionButton;
     private Button afficherMotDePasseButton;
     private CheckBox sauvegardeIdentifiantCheckBox;
+    public static Annee[] ANNEE;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +52,11 @@ public class ConnectionActivity extends AppCompatActivity {
         connectionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                connectionButtonAction();
+                try {
+                    connectionButtonAction();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
         });
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
@@ -72,17 +79,19 @@ public class ConnectionActivity extends AppCompatActivity {
         }
     }
 
-    private void connectionButtonAction() {
+    private void connectionButtonAction() throws InterruptedException {
+        Dialog popUp = new Dialog(this);
+        popUp.setContentView(R.layout.activity_splash_screen);
+        popUp.show();
         String id = identifiantEditText.getText().toString();
         String mdp = motDePasseEditText.getText().toString();
         sauvegardeIdentifiant(id, mdp);
         //Appelle de l'API
         this.traitementAPI(id, mdp);
         //Changement interface -> NoteActivity
-//        Intent i = new Intent(this, NoteActivity.class);
-//        startActivity(i);
-//        finish();
-
+        Intent i = new Intent(this, NoteActivity.class);
+        startActivity(i);
+        finish();
     }
 
     private void sauvegardeIdentifiant(String id, String mdp) {
@@ -95,8 +104,8 @@ public class ConnectionActivity extends AppCompatActivity {
         }
     }
 
-    private void traitementAPI(String id, String mdp) {
-        new Thread() {
+    private void traitementAPI(String id, String mdp) throws InterruptedException {
+        Thread t = new Thread() {
             public void run() {
                 String json = request("https://alexispoupelin.me/getAllNotes?id=i171193&pass=unq84eb&dep=INFO").toString();
                 if(json.length() == 0){
@@ -111,15 +120,17 @@ public class ConnectionActivity extends AppCompatActivity {
                 JsonReader reader = new JsonReader(new StringReader(json));
                 reader.setLenient(true);
                 Annee[] tabAnnee = unGson.fromJson(reader, Annee[].class);
-                Log.i("test", "test");
+                ANNEE = tabAnnee;
             }
-        }.start();
-
+        };
+        t.start();
+        t.join();
     }
+
+
 
     private StringBuffer request(String urlString) {
         // TODO Auto-generated method stub
-
         StringBuffer chaine = new StringBuffer("");
         try {
             URL url = new URL(urlString);

@@ -10,9 +10,6 @@ public class Annee {
     @SerializedName("intitule")
     @Expose
     private String intitule;
-    @SerializedName("temp")
-    @Expose
-    private String temp;
     @SerializedName("code")
     @Expose
     private String code;
@@ -26,14 +23,6 @@ public class Annee {
 
     public void setIntitule(String intitule) {
         this.intitule = intitule;
-    }
-
-    public String getTemp() {
-        return temp;
-    }
-
-    public void setTemp(String temp) {
-        this.temp = temp;
     }
 
     public String getCode() {
