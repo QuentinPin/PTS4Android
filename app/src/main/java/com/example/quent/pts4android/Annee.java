@@ -1,33 +1,55 @@
+
 package com.example.quent.pts4android;
 
-import java.util.ArrayList;
+import java.util.List;
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 
 public class Annee {
 
+    @SerializedName("intitule")
+    @Expose
     private String intitule;
+    @SerializedName("temp")
+    @Expose
+    private String temp;
+    @SerializedName("code")
+    @Expose
     private String code;
-    private Semestre[] content;
-
-    public Annee(String intitule, String code){
-        super();
-        this.intitule = intitule;
-        this.code = code;
-        this.content = new Semestre[4];
-    }
+    @SerializedName("content")
+    @Expose
+    private List<Content> content = null;
 
     public String getIntitule() {
         return intitule;
-    }
-
-    public String getCode() {
-        return code;
     }
 
     public void setIntitule(String intitule) {
         this.intitule = intitule;
     }
 
+    public String getTemp() {
+        return temp;
+    }
+
+    public void setTemp(String temp) {
+        this.temp = temp;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
     public void setCode(String code) {
         this.code = code;
     }
+
+    public List<Content> getContent() {
+        return content;
+    }
+
+    public void setContent(List<Content> content) {
+        this.content = content;
+    }
+
 }

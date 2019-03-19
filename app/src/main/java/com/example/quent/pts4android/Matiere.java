@@ -1,51 +1,55 @@
+
 package com.example.quent.pts4android;
 
-import java.util.ArrayList;
+import java.util.List;
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 
 public class Matiere {
 
-    private Note[] notes;
+    @SerializedName("code")
+    @Expose
     private String code;
+    @SerializedName("intitule")
+    @Expose
     private String intitule;
+    @SerializedName("moyenne")
+    @Expose
     private String moyenne;
+    @SerializedName("notes")
+    @Expose
+    private List<Note> notes = null;
 
-    public Matiere(String intitule, String code, String moyenne){
-        super();
-        this.intitule = intitule;
-        this.code = code;
-        this.moyenne = moyenne;
-        this.notes = new Note[3];
-    }
-
-    public void setListDeNote(ArrayList<Note> listDeNote) {
-        this.notes = listDeNote.toArray(new Note[0]);
+    public String getCode() {
+        return code;
     }
 
     public void setCode(String code) {
         this.code = code;
     }
 
+    public String getIntitule() {
+        return intitule;
+    }
+
     public void setIntitule(String intitule) {
         this.intitule = intitule;
+    }
+
+    public String getMoyenne() {
+        return moyenne;
     }
 
     public void setMoyenne(String moyenne) {
         this.moyenne = moyenne;
     }
 
-    public Note[] getListDeNote() {
+    public List<Note> getNotes() {
         return notes;
     }
 
-    public String getCode() {
-        return code;
+    public void setNotes(List<Note> notes) {
+        this.notes = notes;
     }
 
-    public String getIntitule() {
-        return intitule;
-    }
-
-    public String getMoyenne() {
-        return moyenne;
-    }
 }
