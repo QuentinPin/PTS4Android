@@ -6,7 +6,6 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -16,12 +15,13 @@ import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.net.URL;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -33,6 +33,9 @@ public class ConnectionActivity extends AppCompatActivity {
     private Button afficherMotDePasseButton;
     private CheckBox sauvegardeIdentifiantCheckBox;
     public static Annee[] ANNEE;
+    private boolean boutonConnectionAppuyer;
+    private String id;
+    private String mdp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +70,23 @@ public class ConnectionActivity extends AppCompatActivity {
         if (!identifiant.equals("")) {
             sauvegardeIdentifiantCheckBox.setChecked(true);
         }
+
+        this.boutonConnectionAppuyer = false;
+        Timer timerConnection = new Timer();
+        final TimerTask verifConnection = new TimerTask() {
+            @Override
+            public void run() {
+                if(boutonConnectionAppuyer){
+                    boutonConnectionAppuyer = false;
+                    try {
+                        traitementAPI(id, mdp);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        };
+        timerConnection.schedule(verifConnection,0,10);
     }
 
     private void afficherMotDePasseAction() {
@@ -80,18 +100,14 @@ public class ConnectionActivity extends AppCompatActivity {
     }
 
     private void connectionButtonAction() throws InterruptedException {
+        this.boutonConnectionAppuyer = true;
         Dialog popUp = new Dialog(this);
         popUp.setContentView(R.layout.activity_splash_screen);
         popUp.show();
-        String id = identifiantEditText.getText().toString();
-        String mdp = motDePasseEditText.getText().toString();
+        this.id = identifiantEditText.getText().toString();
+        this.mdp = motDePasseEditText.getText().toString();
         sauvegardeIdentifiant(id, mdp);
-        //Appelle de l'API
-        this.traitementAPI(id, mdp);
-        //Changement interface -> NoteActivity
-        Intent i = new Intent(this, NoteActivity.class);
-        startActivity(i);
-        finish();
+
     }
 
     private void sauvegardeIdentifiant(String id, String mdp) {
@@ -125,6 +141,8 @@ public class ConnectionActivity extends AppCompatActivity {
         };
         t.start();
         t.join();
+        Intent i = new Intent(this, NoteActivity.class);
+        startActivity(i);
     }
 
 

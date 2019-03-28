@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.nio.charset.StandardCharsets;
+
 public class NoteActivity extends AppCompatActivity {
 
     private LinearLayout linearLayoutNote;
@@ -20,25 +22,34 @@ public class NoteActivity extends AppCompatActivity {
             TextView nomAnnee = new TextView(this);
             nomAnnee.setText(unAnnee.getIntitule());
             nomAnnee.setTextColor(Color.WHITE);
-            nomAnnee.setBackgroundColor(Color.BLACK);
+            nomAnnee.setBackgroundColor(Color.rgb(0,113,246));
+            nomAnnee.setPadding(20,30,0,30);
             linearLayoutNote.addView(nomAnnee);
 
             for(Content unContent: unAnnee.getContent()){
                 TextView nomSemestre = new TextView(this);
-                nomSemestre.setText("\t" + unContent.getIntitule());
+                nomSemestre.setText(unContent.getIntitule());
                 nomSemestre.setTextColor(Color.WHITE);
-                nomSemestre.setBackgroundColor(Color.BLUE);
+                nomSemestre.setBackgroundColor(Color.rgb(61,167,79));
+                nomSemestre.setPadding(100,20,0,20);
                 linearLayoutNote.addView(nomSemestre);
 
                 for(Matiere uneMatière: unContent.getMatieres()){
                     TextView nomMatière = new TextView(this);
-                    nomMatière.setText("\t\t" + uneMatière.getIntitule() + ": " + uneMatière.getMoyenne());
+                    char[] intituleSansNumeroMatiere = new char[uneMatière.getIntitule().length()-6];
+                    uneMatière.getIntitule().getChars(6, uneMatière.getIntitule().length(), intituleSansNumeroMatiere, 0);
+                    String tempo = new String(intituleSansNumeroMatiere);
+                    nomMatière.setText(tempo + ": " + uneMatière.getMoyenne());
+                    nomMatière.setPadding(100,0,0,0);
                     linearLayoutNote.addView(nomMatière);
 
                     for(Note uneNote: uneMatière.getNotes()){
-                        TextView nomNote = new TextView(this);
-                        nomNote.setText("\t\t\t" + uneNote.getDescription() + ": " + uneNote.getValue());
-                        linearLayoutNote.addView(nomNote);
+                        if(uneNote.getDescription() != null){
+                            TextView nomNote = new TextView(this);
+                            nomNote.setText(uneNote.getDescription() + ": " + uneNote.getValue());
+                            nomNote.setPadding(200,0,0,0);
+                            linearLayoutNote.addView(nomNote);
+                        }
                     }
 
                 }
