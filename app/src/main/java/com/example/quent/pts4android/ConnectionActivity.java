@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -79,7 +80,7 @@ public class ConnectionActivity extends AppCompatActivity {
                 if(boutonConnectionAppuyer){
                     boutonConnectionAppuyer = false;
                     try {
-                        traitementAPI(id, mdp);
+                        traitementAPI();
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -100,12 +101,12 @@ public class ConnectionActivity extends AppCompatActivity {
     }
 
     private void connectionButtonAction() throws InterruptedException {
+        this.id = identifiantEditText.getText().toString();
+        this.mdp = motDePasseEditText.getText().toString();
         this.boutonConnectionAppuyer = true;
         Dialog popUp = new Dialog(this);
         popUp.setContentView(R.layout.activity_splash_screen);
         popUp.show();
-        this.id = identifiantEditText.getText().toString();
-        this.mdp = motDePasseEditText.getText().toString();
         sauvegardeIdentifiant(id, mdp);
 
     }
@@ -120,29 +121,34 @@ public class ConnectionActivity extends AppCompatActivity {
         }
     }
 
-    private void traitementAPI(String id, String mdp) throws InterruptedException {
+    private void traitementAPI() throws InterruptedException {
+        final boolean[] connectionReussie = {true};
         Thread t = new Thread() {
             public void run() {
-                String json = request("https://alexispoupelin.me/getAllNotes?id=i171193&pass=unq84eb&dep=INFO").toString();
+                String json = request("https://alexispoupelin.me/getAllNotes?id=" + id + "&pass=" + mdp + "&dep=INFO").toString();
                 if(json.length() == 0){
-                    /*
-                    ----- ERREUR DE CHARGEMENT -----
-                     */
+                    connectionReussie[0] = false;
+                } else {
+                    char[] tempo = new char[json.length() - 2];
+                    json.getChars(1, json.length() - 1, tempo, 0);
+                    json = new String(tempo);
+                    Gson unGson = new Gson();
+                    JsonReader reader = new JsonReader(new StringReader(json));
+                    reader.setLenient(true);
+                    Annee[] tabAnnee = unGson.fromJson(reader, Annee[].class);
+                    ANNEE = tabAnnee;
                 }
-                char[] tempo = new char[json.length()-2];
-                json.getChars(1, json.length()-1, tempo, 0);
-                json = new String(tempo);
-                Gson unGson = new Gson();
-                JsonReader reader = new JsonReader(new StringReader(json));
-                reader.setLenient(true);
-                Annee[] tabAnnee = unGson.fromJson(reader, Annee[].class);
-                ANNEE = tabAnnee;
             }
         };
         t.start();
         t.join();
-        Intent i = new Intent(this, NoteActivity.class);
-        startActivity(i);
+        if(connectionReussie[0] == true){
+            Intent i = new Intent(this, NoteActivity.class);
+            startActivity(i);
+        }else{
+            Intent i = new Intent(this, ConnectionActivity.class);
+            startActivity(i);
+        }
     }
 
 

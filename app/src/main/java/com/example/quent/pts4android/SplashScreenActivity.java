@@ -9,12 +9,14 @@ import android.os.Handler;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.webkit.WebView;
 
 import static android.os.Process.SIGNAL_KILL;
 
 public class SplashScreenActivity extends AppCompatActivity {
 
     private static int SPLASH_TIME_OUT = 1000;
+    private WebView uneWebView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,7 +34,6 @@ public class SplashScreenActivity extends AppCompatActivity {
                 }
             }, SPLASH_TIME_OUT);
         }
-
     }
 
     private boolean isConnectedToInternet(){

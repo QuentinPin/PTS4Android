@@ -24,7 +24,14 @@
             android:layout_width="200dp"
             android:layout_height="200dp"
             android:layout_marginBottom="50dp"
-            app:srcCompat="@drawable/logo_application_rond" />
+            app:srcCompat="@drawable/logo_application_rond"
+            android:contentDescription="TODO" />
+
+        <WebView
+            android:id="@+id/webView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:ignore="WebViewLayout" />
 
         <TextView
             android:id="@+id/textView3"
